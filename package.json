@@ -25,7 +25,7 @@
     "handlebars": "bin/handlebars"
   },
   "scripts": {
-    "test": "node_modules/.bin/mocha -u qunit spec/qunit_spec.js"
+    "test": "mocha -u qunit spec/qunit_spec.js"
   },
   "optionalDependencies": {}
 }
