@@ -25,7 +25,8 @@
     "handlebars": "bin/handlebars"
   },
   "scripts": {
-    "test": "mocha -u qunit spec/qunit_spec.js"
+    "test": "mocha -u qunit spec/qunit_spec.js",
+    "postinstall": "jison src/handlebars.yy src/handlebars.l -o lib/handlebars/compiler/parser.js"
   },
   "optionalDependencies": {}
 }
