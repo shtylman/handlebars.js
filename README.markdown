@@ -62,6 +62,8 @@ template(context);
 // </ul>
 ```
 
+You can omit passing `this` to the helper as an argument as it will be implicitly passed.
+
 Escaping
 --------
 
@@ -111,8 +113,8 @@ When calling a helper, you can pass paths or Strings as parameters. For
 instance:
 
 ```js
-Handlebars.registerHelper('link_to', function(title, context) {
-  return "<a href='/posts" + context.id + "'>" + title + "</a>"
+Handlebars.registerHelper('link_to', function(title, obj) {
+  return "<a href='/posts" + obj.id + "'>" + title + "</a>"
 });
 
 var context = { posts: [{url: "/hello-world", body: "Hello World!"}] };
@@ -134,12 +136,13 @@ gets passed to the helper function.
 
 ### Block Helpers
 
-Handlebars.js also adds the ability to define block helpers. Block helpers are functions that can be called from anywhere in the template. Here's an example:
+Handlebars.js also adds the ability to define block helpers. Block helpers are functions that can be called from anywhere in the template and wrap more templates:
 
 ```js
 var source = "<ul>{{#people}}<li>{{{#link}}}{{name}}{{/link}}</li>{{/people}}</ul>";
-Handlebars.registerHelper('link', function(context, fn) {
-  return '<a href="/people/' + this.__get__("id") + '">' + fn(this) + '</a>';
+Handlebars.registerHelper('link', function(context) {
+  // by calling context.fn with `this` we pass the person object to the inner template
+  return '<a href="/people/' + this.id + '">' + context.fn(this) + '</a>';
 });
 var template = Handlebars.compile(source);
 
@@ -156,7 +159,7 @@ template(data);
 // </ul>
 ```
 
-Whenever the block helper is called it is given two parameters, the argument that is passed to the helper, or the current context if no argument is passed and the compiled contents of the block. Inside of the block helper the value of `this` is the current context, wrapped to include a method named `__get__` that helps translate paths into values within the helpers.
+Whenever the block helper is called, besides being given the parameters like a normal helper, it is also given a 'context' object. This context object contains a field `fn` which is the compiled template for our block. Anything you pass as the argument to this function will become the local. To access your locals inside the block helper, just reference them from `this` as with normal helpers.
 
 ### Partials
 
